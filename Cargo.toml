@@ -1,0 +1,109 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+[package]
+name = "router"
+description = "Router"
+
+version = "0.1.0"
+authors = ["Cathal Mullan <contact@cathal.dev>"]
+edition = "2021"
+repository = "https://github.com/CathalMullan/router"
+license = "MIT OR Apache-2.0"
+keywords = ["router"]
+categories = ["network-programming", "web-programming"]
+publish = false
+
+[profile.dev.package]
+insta.opt-level = 3
+similar.opt-level = 3
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+cargo = { level = "deny", priority = -1 }
+complexity = { level = "deny", priority = -1 }
+correctness = { level = "deny", priority = -1 }
+nursery = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+perf = { level = "deny", priority = -1 }
+style = { level = "deny", priority = -1 }
+suspicious = { level = "deny", priority = -1 }
+
+clone_on_ref_ptr = "deny"
+mem_forget = "deny"
+multiple_inherent_impl = "deny"
+
+# Personal Preferences
+module_name_repetitions = "allow"
+option_if_let_else = "allow"
+
+# FIXME: Strict
+indexing_slicing = "allow"
+empty_docs = "allow"
+unwrap_used = "allow"
+expect_used = "allow"
+missing_panics_doc = "allow"
+missing_errors_doc = "allow"
+
+[features]
+default = []
+regex = ["dep:regex"]
+
+[dependencies]
+smallvec = "1.13"
+regex = { version = "1.10", optional = true }
+
+[dev-dependencies]
+# Snapshots
+# NOTE: Keep in sync with `cargo-insta` Nix package.
+insta = "1.39.0"
+
+# Benchmarking
+criterion = { version = "0.5", features = ["html_reports"] }
+divan = "0.1"
+
+# Routers
+actix-router = "0.5"
+gonzales = "0.0.3-beta"
+matchit = "0.8"
+ntex-router = "0.5"
+path-table = "1.0"
+path-tree = "0.8"
+regex = "1.10"
+route-recognizer = "0.3"
+
+[[bench]]
+name = "simple_criterion"
+harness = false
+
+[[bench]]
+name = "simple_divan"
+harness = false
+
+[[bench]]
+name = "advanced_criterion"
+harness = false
+
+[[bench]]
+name = "advanced_divan"
+harness = false
+
+[[bench]]
+name = "path_tree_criterion"
+harness = false
+
+[[bench]]
+name = "path_tree_divan"
+harness = false
+
+[[bench]]
+name = "github"
+harness = false
+
+[[bench]]
+name = "gitlab"
+harness = false
+
+[[bench]]
+name = "oci"
+harness = false
