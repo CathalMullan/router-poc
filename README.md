@@ -2,6 +2,52 @@
 
 Proof of concept.
 
+```rust
+let mut trie = Trie::new();
+trie.insert("/ab/def", 1);
+trie.insert("/abc/def", 2);
+trie.insert("/abc/{p1}", 3);
+trie.insert("/abc/{p1}/def", 4);
+trie.insert("/abc/{p1}/{p2}", 5);
+trie.insert("/abc/def/{p1:*}", 6);
+trie.insert("/a/b/c/d", 7);
+trie.insert("/a/{p1}/{p2}/c", 8);
+trie.insert("/{p1:*}", 9);
+trie.insert("/abc/{p1:\\d+}/def", 10);
+trie.insert("/kcd/{p1:\\d+}", 11);
+trie.insert("/{package}/-/{package_tgz:.*tgz$}", 12);
+
+insta::assert_snapshot!(trie, @r###"
+ROOT
+   ╰─ /
+      ├─ a
+      │  ├─ b
+      │  │  ├─ /def [1]
+      │  │  ╰─ c/
+      │  │      ├─ def [2]
+      │  │      │    ╰─ /
+      │  │      │       ╰─ {p1:*} [6]
+      │  │      ├─ {p1:\d+}
+      │  │      │         ╰─ /def [10]
+      │  │      ╰─ {p1} [3]
+      │  │            ╰─ /
+      │  │               ├─ def [4]
+      │  │               ╰─ {p2} [5]
+      │  ╰─ /
+      │     ├─ b/c/d [7]
+      │     ╰─ {p1}
+      │           ╰─ /
+      │              ╰─ {p2}
+      │                    ╰─ /c [8]
+      ├─ kcd/
+      │     ╰─ {p1:\d+} [11]
+      ├─ {package}
+      │          ╰─ /-/
+      │               ╰─ {package_tgz:.*tgz$} [12]
+      ╰─ {p1:*} [9]
+"###);
+```
+
 ## Benchmarks + Tests
 
 ### `matchit` benchmarks
@@ -126,4 +172,3 @@ advanced_divan       fastest       │ slowest       │ median        │ mean 
                        0           │ 20            │ 0             │ 0.2           │         │
                        0 B         │ 70.23 KB      │ 0 B           │ 702.3 B       │         │
 ```
-g
